@@ -1,14 +1,14 @@
 import React, { useState, useContext } from "react";
-import styles from "./Signin.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import { authenticate } from "../Auth";
 import { UserContext } from "../../App";
-
+import styles from "./SignIn.module.css";
 import M from "materialize-css";
 
 const SignIn = () => {
   const { state, dispatch } = useContext(UserContext);
   const navigate = useNavigate();
+
   const [values, setValues] = useState({
     email: "",
     password: "",
@@ -56,11 +56,10 @@ const SignIn = () => {
 
     signInAPI({ email, password }).then((data) => {
       if (data.error) {
-        console.log("data error: ", data.error);
         M.toast({ html: data.error, classes: "rounded red" });
       } else {
         authenticate(data, () => {
-          M.toast({ html: "Login Success", classes: "rounded green" });
+          M.toast({ html: "Signin Success", classes: "rounded green" });
           setValues({ ...values, error: "", redirectUser: true });
         });
         dispatch({ type: "USER", payload: data.user });

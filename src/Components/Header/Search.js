@@ -1,9 +1,9 @@
 import React,{useState} from "react";
-import styles from "./header.module.css";
+import styles from "./Header.module.css";
 import {list} from '../Header/apiSearch'
 import Card from '../Home/Card'
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-
+import searchIcon from '../../assets/icons/search.png'
 
 
 const Search = () => {
@@ -46,7 +46,7 @@ const Search = () => {
         return (
             <form onSubmit={searchSubmit}>
                 <div className={styles.headerSearch}>
-                    <img alt="" src="./icons/search.png"></img>
+                    <img alt="" src={searchIcon}></img>
                     <input type="search"  className='form-control' name="search" onChange={handleChange('search')} placeholder="Search by name"></input>
                 </div>  
             </form>

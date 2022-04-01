@@ -2,11 +2,12 @@ import React, {useContext, useState} from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {UserContext} from '../../App'
 import Search from '../Header/Search'
-import {list} from '../Header/apiSearch'
 import Card from '../Home/Card'
+import {isAuthenticated} from '../Auth/index'
+import { itemTotal } from "../Cart/helperCart";
 import Modal from "../model/Modal";
-import styles from "./header.module.css";
-import M from 'materialize-css'
+import styles from "./Header.module.css";
+import logo from '../../assets/images/logo192.png'
 
 const Header = () => {
 
@@ -21,16 +22,24 @@ const Header = () => {
         navigate('/')
         setModalOpen(false)
     }
-
+    console.log("isAuthenticated ",isAuthenticated())
     const renderList = () => {
-        if(state) {
+        if(isAuthenticated()) {
             return (
-                <div className={styles.headerButton}>                 
-                    <button className="btn btn-info openModalBtn"  onClick={() => {
-                        setModalOpen(true);
-                       
-                    }} >sign Out</button>   
-                </div> 
+               <div className="d-flex">
+                    <div className={styles.headerButton}>                 
+                        <button className="btn btn-info openModalBtn"  onClick={() => {
+                            setModalOpen(true);
+                        
+                        }} >sign Out</button>   
+                    </div> 
+                    <div className={`${styles.headerButton } ml-4`}>                 
+                        <Link to="/cart">
+                            <button className="btn btn-info ">Cart <sup><small className={styles.cartBadge}>{itemTotal()}</small></sup> </button>   
+                        </Link>
+                    </div> 
+               </div>
+                
             )
         }
         else {
@@ -53,7 +62,7 @@ const Header = () => {
              <header className={`container ${styles.header}`}>
                 <Link to="/">
                     <div className={styles.headerLogo}>
-                        <img alt="" src="./icons/logo.png"></img>
+                        <img alt="" src={logo}></img>
                     </div>
                 </Link>
                 <Link to="/shop " className="nav-link">

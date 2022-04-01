@@ -1,16 +1,15 @@
-import React from "react";
-import { useEffect, useState } from "react";
+import React, {useState, useEffect}from "react";
 import { Link } from "react-router-dom";
-import styles from "./home.module.css";
 import Header from "../Header";
 import Slider from "react-slick";
 import Footer from "../Footer";
 import CardCourse from "../CardCourse";
 import { getCourses } from "./apiCore";
 import ResultSearch from './ResultSearch'
+import styles from "./Home.module.css";
+import "./HomeSlick.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "./homeSlick.css";
 
 const Home = () => {
   const settings = {
@@ -96,12 +95,10 @@ const Home = () => {
               <div key={i} className={styles.listCourse}>
                 <div className="row">
                   <article className={`col listCourse__item`}>
-                    <img
-                      className={styles.itemImage}
-                      src={course.image}
-                      alt=""
-                    />
+                  <Link to={`/course/${course._id}`}>
+                    <img className={styles.itemImage} src={course.image} alt="" />
                     <h6 className="mt-2">{course.name}</h6>
+                  </Link>
                     <span>vo trung hieu</span>
                     <div className={styles.listCourseItemStar}>
                       <p>(295,007)</p>
