@@ -1,8 +1,6 @@
 import "./App.css";
 import React, { useReducer, useContext, createContext } from "react";
-import GlobalStyle from "./components/GlobalStyle";
-import Root from "./components/Screen/root";
-import { BrowserRouter } from "react-router-dom";
+import { Root, GlobalStyle } from "./components";
 import { reducer, initialState } from "./reducers";
 
 export const UserContext = createContext();

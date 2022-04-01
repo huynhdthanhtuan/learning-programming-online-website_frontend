@@ -9,3 +9,5 @@ export { default as AddCategory } from "./Teacher/AddCategory";
 export { default as AddCProduct } from "./Teacher/AddProduct";
 export { default as CourseDetail } from "./CourseDetail";
 export { default as Course } from "./Course";
+export { default as GlobalStyle } from "./GlobalStyle";
+export { default as Root } from "./Screen/root";
