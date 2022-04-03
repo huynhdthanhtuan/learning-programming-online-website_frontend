@@ -1,7 +1,7 @@
-import "./App.css";
-import React, { useReducer, useContext, createContext } from "react";
-import { Root, GlobalStyle } from "./components";
+import React, { useReducer, createContext } from "react";
 import { reducer, initialState } from "./reducers";
+import { Root, GlobalStyle } from "./components";
+import { ToastContainer, toast } from "react-toastify";
 
 export const UserContext = createContext();
 
@@ -9,6 +9,7 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <GlobalStyle>
+      <ToastContainer position="top-right" autoClose={1000} type="default" />
       <UserContext.Provider value={{ state, dispatch }}>
         <Root />
       </UserContext.Provider>

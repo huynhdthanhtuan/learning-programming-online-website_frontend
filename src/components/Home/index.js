@@ -7,6 +7,7 @@ import CardCourse from "../CardCourse";
 import { getCourses } from "./apiCore";
 import ResultSearch from './ResultSearch'
 import styles from "./Home.module.css";
+import { isAuth,isAuthenticated } from "../Auth";
 import "./HomeSlick.css";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -76,11 +77,13 @@ const Home = () => {
                     <img className={styles.itemImage} src={course.image} alt="" />
                     <h6 className="mt-2">{course.name}</h6>
                   </Link>
-                  <span>vo trung hieu</span>
-                  <div className={styles.listCourseItemStar}>
-                    <p>(295,007)</p>
-                  </div>
-                  <span className={styles.money}>${course.price}</span>
+                  <div className={styles.itemCourseText}>
+                      <span>vo trung hieu</span>
+                      <div className={styles.listCourseItemStar}>
+                        <p>(295,007)</p>
+                      </div>
+                      <span className={styles.money}>${course.price}</span>
+                    </div>
                 </article>
               </div>
             </div>
@@ -99,11 +102,13 @@ const Home = () => {
                     <img className={styles.itemImage} src={course.image} alt="" />
                     <h6 className="mt-2">{course.name}</h6>
                   </Link>
-                    <span>vo trung hieu</span>
-                    <div className={styles.listCourseItemStar}>
-                      <p>(295,007)</p>
+                    <div className={styles.itemCourseText}>
+                      <span>vo trung hieu</span>
+                      <div className={styles.listCourseItemStar}>
+                        <p>(295,007)</p>
+                      </div>
+                      <span className={styles.money}>${course.price}</span>
                     </div>
-                    <span className={styles.money}>${course.price}</span>
                   </article>
                 </div>
               </div>

@@ -43,7 +43,7 @@ const Shop = () => {
                 })
         }
     }
-    const searchMessage = (searchedCoursest) => {
+    const searchMessage = (searchedCourses) => {
         if(searchedCourses && searchedCourses.length > 0 ) {
             return `Found ${searchedCourses.length} products`
         }
@@ -114,6 +114,9 @@ const Shop = () => {
 
         return range;
     }
+
+
+    console.log("filteredResult ",filteredResult);
     return (
             <div>
                <Header />
@@ -133,13 +136,16 @@ const Shop = () => {
                         
                         <div className='col-8 mb-5'>
                             <div className='row'>
-                                    {searchedCourses.map((course,i) => 
+                                    
+                                    {searchedCourses.length <= 0 && searchMessage(searchedCourses)}
+                                    {filteredResult && filteredResult.length <= 0 && searchedCourses.map((course,i) => 
                                         (
                                         <div className='col-4 mt-4' key={course._id}>
                                             <Card course={course}/>
                                         </div>
                                         )
                                     )}   
+
                                     {filteredResult.map((course,i) => 
                                         (
                                         <div className='col-4 mt-4' key={course._id}>
