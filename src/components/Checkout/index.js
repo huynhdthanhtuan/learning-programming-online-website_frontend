@@ -3,12 +3,16 @@ import { Link, useNavigate } from "react-router-dom";
 import Header from "../Header";
 import styles from "./Checkout.module.css";
 import "bootstrap/dist/css/bootstrap.css";
-import { getBraintreeClientToken, processPayment, registerCourse } from "./apiCheckout";
+import {
+  getBraintreeClientToken,
+  processPayment,
+  registerCourse,
+} from "./apiCheckout";
 import { useState } from "react";
 import { isAuth, isAuthenticated } from "../Auth";
 import { useEffect } from "react";
 import DropIn from "braintree-web-drop-in-react";
-import { emptyCart, getTotal, getCart} from "../Cart/helperCart";
+import { emptyCart, getTotal, getCart } from "../Cart/helperCart";
 
 const Checkout = () => {
   const navigate = useNavigate();
@@ -23,6 +27,7 @@ const Checkout = () => {
 
   const result = JSON.parse(localStorage.getItem("jwt"));
   const { user, token } = result;
+
   const getToken = (user, token) => {
     getBraintreeClientToken(user._id, token).then((result) => {
       if (result.error) {
@@ -43,21 +48,19 @@ const Checkout = () => {
 
   const saveCoursesRegistered = (courses) => {
     courses.map((course, id) => {
-      return registerCourse(user._id, token, course._id)
-      .then(data => {
-        console.log("course da dang ki ",data)
-      })
-    }) 
-  }
+      return registerCourse(user._id, token, course._id).then((data) => {
+        console.log("course da dang ki ", data);
+      });
+    });
+  };
 
   const confirmPay = () => {
     let nonce;
     let getNonce = data.instance
       .requestPaymentMethod()
       .then((result) => {
-        console.log("result", result);
         nonce = result.nonce;
-        console.log("nonce ", nonce);
+
         //once you have nonce (card type, card number)
         const paymentData = {
           paymentMethodNonce: nonce,
@@ -68,9 +71,8 @@ const Checkout = () => {
           .then((response) => {
             setData({ ...data, success: response.success });
             let courses = getCart();
-            saveCoursesRegistered(courses); 
-           emptyCart();
-
+            saveCoursesRegistered(courses);
+            emptyCart();
           })
           .catch((error) => console.log(error));
       })
@@ -108,7 +110,7 @@ const Checkout = () => {
               onClick={success ? moveToCourses : confirmPay}
               className="btn btn-success btn-block"
             >
-              Confirm
+              Confirm Payment
             </button>
           </div>
         ) : null}
@@ -138,7 +140,7 @@ const Checkout = () => {
 
   return (
     <section>
-      <Header />
+      <Header role={0} />
       {showError(error)}
       {showSuccsess(success)}
 

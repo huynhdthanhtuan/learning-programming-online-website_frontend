@@ -1,8 +1,12 @@
 import React, { useReducer, createContext } from "react";
 import { reducer, initialState } from "./reducers";
+import { ToastContainer } from "react-toastify";
 import GlobalStyle from "./components/GlobalStyle";
-import Root from "./components/Screen/root";
-import { ToastContainer, toast } from "react-toastify";
+import Screens from "./screens";
+import {
+  AvatarImageContextProvider,
+  ForgotPasswordContextProvider,
+} from "./contexts";
 
 export const UserContext = createContext();
 
@@ -10,9 +14,13 @@ function App() {
   const [state, dispatch] = useReducer(reducer, initialState);
   return (
     <GlobalStyle>
-      <ToastContainer position="top-right" autoClose={1000} type="default" />
+      <ToastContainer position="top-center" autoClose={1000} type="default" />
       <UserContext.Provider value={{ state, dispatch }}>
-        <Root />
+        <AvatarImageContextProvider>
+          <ForgotPasswordContextProvider>
+            <Screens />
+          </ForgotPasswordContextProvider>
+        </AvatarImageContextProvider>
       </UserContext.Provider>
     </GlobalStyle>
   );

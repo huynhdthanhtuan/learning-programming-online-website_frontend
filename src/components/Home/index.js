@@ -1,29 +1,24 @@
-import React, {useState, useEffect}from "react";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect, useRef } from "react";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import Header from "../Header";
-import Slider from "react-slick";
+import DashBoardTeacher from "../DashboardTeacher";
 import Footer from "../Footer";
-import CardCourse from "../CardCourse";
-import { getCourses } from "./apiCore";
-import ResultSearch from './ResultSearch'
-import styles from "./Home.module.css";
-import { isAuth,isAuthenticated } from "../Auth";
+import { toast } from "react-toastify";
+import { enableScrollBehavior, getUserRole } from "../../constants";
 import "./HomeSlick.css";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
+import { getCourses } from "./apiCore";
+import ResultSearch from "./ResultSearch";
+import styles from "./Home.module.css";
+import { isAuth, isAuthenticated } from "../Auth";
+import { addItem } from "../Cart/helperCart";
 
 const Home = () => {
-  const settings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-  };
-
   const [courseBySell, setCourseBySell] = useState([]);
   const [courseByArrival, setCourseByArrival] = useState([]);
   const [error, setError] = useState(false);
+  const [redirect, setRedirect] = useState(false);
+  const navigate = useNavigate();
+  const [resultSearchedCourses, setResultSearchedCourses] = useState();
 
   const loadCourseBySell = () => {
     getCourses("sold").then((data) => {
@@ -34,6 +29,7 @@ const Home = () => {
       }
     });
   };
+
   const loadCourseByArrival = () => {
     getCourses("createdAt").then((data) => {
       if (data.error) {
@@ -44,82 +40,127 @@ const Home = () => {
     });
   };
 
-  useEffect(() => {
-    loadCourseBySell();
-    loadCourseByArrival();
-  }, []);
+  const addToCart = (courseToAdd) => {
+    if (isAuthenticated()) {
+      addItem(courseToAdd, () => {
+        setRedirect(true);
+        toast.success("ADD TO CART SUCCESS");
+      });
+    } else {
+      toast.info("YOU MUST BE SIGN IN");
+      navigate("/signin");
+    }
+  };
 
-  return (
-    <body className={styles.home}>
-      <Header />
-      <section className={`container_fluid ${styles.homeBanner}`}>
-        <img src="./icons/banner.png" alt=""></img>
-      </section>
-      <section className={styles.homeCourseText}>
-        <h1>Course</h1>
-        <div className={styles.homeCourseTextP}>
-          <p>
-            <b>Learning Programming Online Website</b> where you can find low
-            cost online programming courses. We are committed to the quality of
-            each course.
-          </p>
-        </div>
-      </section>
-    {/* {ResultSearch()} */}
-      <section className={`container ${styles.homeSlider}`}>
-        <h2>New arrivals</h2>
-        <Slider {...settings}>
-          {courseByArrival.map((course, i) => (
-            <div key={i} className={styles.listCourse}>
-              <div className="row">
-                <article className={`col listCourse__item`}>
+  const handleSearchResult = (resultSearch) => {
+    setResultSearchedCourses(resultSearch);
+  };
+
+  const renderHome = () => {
+    return (
+      <div className={styles.home}>
+        <Header
+          handleSearchResult={(resultSearch) =>
+            handleSearchResult(resultSearch)
+          }
+        />
+        <section className={`container_fluid ${styles.homeBanner}`}>
+          <img src="./icons/banner.png" alt=""></img>
+        </section>
+        <section className={styles.homeCourseText}>
+          <h1>Course</h1>
+          <div className={styles.homeCourseTextP}>
+            <p>
+              <b>Learning Programming Online Website</b> where you can find low
+              cost online programming courses. We are committed to the quality
+              of each course.
+            </p>
+          </div>
+        </section>
+        {/* {ResultSearch()} */}
+        <section className={`container ${styles.homeSlider}`}>
+          {resultSearchedCourses && (
+            <ResultSearch resultSearch={resultSearchedCourses} />
+          )}
+          <h2>New courses</h2>
+          <div className="d-flex justify-content-between">
+            {courseByArrival.map((course, i) => (
+              <div key={i} className={`row ${styles.listCourse}`}>
+                <article className={`col ${styles.listCourse__item}`}>
                   <Link to={`/course/${course._id}`}>
-                    <img className={styles.itemImage} src={course.image} alt="" />
+                    <img
+                      className={styles.itemImage}
+                      src={course.image}
+                      alt=""
+                    />
                     <h6 className="mt-2">{course.name}</h6>
                   </Link>
                   <div className={styles.itemCourseText}>
-                      <span>vo trung hieu</span>
-                      <div className={styles.listCourseItemStar}>
-                        <p>(295,007)</p>
-                      </div>
-                      <span className={styles.money}>${course.price}</span>
+                    <span>Sơn Đặng</span>
+                    <div className={styles.listCourseItemStar}>
+                      <p>(295,007)</p>
                     </div>
+                    <span className={styles.money}>${course.price}</span>
+                  </div>
+                  <button
+                    className="btn btn-outline-info mt-2 mb-2"
+                    onClick={() => addToCart(course)}
+                  >
+                    Add to cart
+                  </button>
                 </article>
               </div>
-            </div>
-          ))}
-        </Slider>
-      </section>
-      <section className={`container ${styles.homeSlider}`}>
-        <h2>Best Sellers</h2>
-        <div className={styles.homeListItem}>
-          <Slider {...settings}>
+            ))}
+          </div>
+        </section>
+        <section className={`container ${styles.homeSlider}`}>
+          <h2>Best sellers</h2>
+          <div className="d-flex justify-content-between">
             {courseBySell.map((course, i) => (
-              <div key={i} className={styles.listCourse}>
-                <div className="row">
-                  <article className={`col listCourse__item`}>
+              <div key={i} className={`row ${styles.listCourse}`}>
+                <article className={`col ${styles.listCourse__item}`}>
                   <Link to={`/course/${course._id}`}>
-                    <img className={styles.itemImage} src={course.image} alt="" />
+                    <img
+                      className={styles.itemImage}
+                      src={course.image}
+                      alt=""
+                    />
                     <h6 className="mt-2">{course.name}</h6>
                   </Link>
-                    <div className={styles.itemCourseText}>
-                      <span>vo trung hieu</span>
-                      <div className={styles.listCourseItemStar}>
-                        <p>(295,007)</p>
-                      </div>
-                      <span className={styles.money}>${course.price}</span>
+                  <div className={styles.itemCourseText}>
+                    <span>Sơn Đặng</span>
+                    <div className={styles.listCourseItemStar}>
+                      <p>(295,007)</p>
                     </div>
-                  </article>
-                </div>
+                    <span className={styles.money}>${course.price}</span>
+                  </div>
+                  <button
+                    className="btn btn-outline-info mt-2 mb-2"
+                    onClick={() => addToCart(course)}
+                  >
+                    Add to cart
+                  </button>
+                </article>
               </div>
             ))}
-          </Slider>
-        </div>
-      </section>
+          </div>
+        </section>
 
-      <Footer />
-    </body>
-  );
+        <Footer />
+      </div>
+    );
+  };
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    loadCourseBySell();
+    loadCourseByArrival();
+
+    // Kích hoạt hành vi cuộn (scroll)
+    enableScrollBehavior(true);
+  }, []);
+
+  return getUserRole() == 1 ? <DashBoardTeacher /> : renderHome();
 };
 
 export default Home;

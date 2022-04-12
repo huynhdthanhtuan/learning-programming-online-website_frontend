@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { getCart } from "./helperCart";
+import { enableScrollBehavior } from "../../constants";
 import Header from "../Header";
 import Layout from "../Layout";
 import styles from "./Cart.module.css";
@@ -11,56 +12,66 @@ import Carted from "../Carted";
 import Checkout from "./Checkout";
 
 const Cart = () => {
-  const [items, setItems] = useState()
-
-  console.log(items);
-  useEffect(() => {
-    setItems(getCart())
-  }, [])
+  const [items, setItems] = useState();
 
   const showItems = (items) => {
-    return(
+    return (
       <div>
-        <h2>
-          Your cart has {items && items.length} items
-        </h2>
-        <hr/>
-        {items && items.map((course, i) => {
-          return (
-            <Carted key={i} course={course} cartUpdate={true} showRemoveCourse={true}/>
-          ) 
-        })}
+        <h2>Your cart has {items && items.length} items</h2>
+        <hr />
+        {items &&
+          items.map((course, i) => {
+            return (
+              <Carted
+                key={i}
+                course={course}
+                cartUpdate={true}
+                showRemoveCourse={true}
+              />
+            );
+          })}
       </div>
-    )
-  }
+    );
+  };
 
-  const noItemMessage = () => ( <h2>
+  const noItemMessage = () => (
+    <h2>
       Your cart is empty .
-      <br/>
+      <br />
       <Link to="/shop">Continue Shop</Link>
-    </h2>)
-   
- 
+    </h2>
+  );
+
+  useEffect(() => {
+    window.scrollTo(0, 0);
+    setItems(getCart());
+
+    // Kích hoạt hành vi cuộn (scroll)
+    enableScrollBehavior(true);
+  }, []);
 
   return (
-    <Layout
-      title="Courses Cart"
-      description="Manage your cart Courses. Add, remove, checkout or continue shopping."
-      className="container-fluid"
-    >
-      <div className="row">
-        <div className="col-8">
-            {items && ( items.length > 0? showItems(items): noItemMessage())}
-        </div>
-        <div className="col-4">
-          <div>
-          <h2 className="mt-4">Your cart summary</h2>
-           <hr/>
-           <Checkout  courses={items} />
+    <>
+      <Header showSearchPart={false} />
+      <Layout
+        title="Courses Cart"
+        description="Manage your cart Courses. Add, remove, checkout or continue shopping."
+        className="container-fluid"
+      >
+        <div className="row">
+          <div className="col-8">
+            {items && (items.length > 0 ? showItems(items) : noItemMessage())}
+          </div>
+          <div className="col-4">
+            <div>
+              <h2 className="mt-4">Your cart summary</h2>
+              <hr />
+              <Checkout courses={items} />
+            </div>
           </div>
         </div>
-      </div>
-    </Layout>
+      </Layout>
+    </>
   );
 };
 

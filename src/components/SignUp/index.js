@@ -20,7 +20,6 @@ const SignUp = () => {
     return fetch("/auth/signup", {
       method: "POST",
       headers: {
-        // Accept: "application/json",
         "Content-Type": "application/json",
       },
       body: JSON.stringify(user),
@@ -29,11 +28,9 @@ const SignUp = () => {
         return res.json();
       })
       .catch((err) => {
-        console.log(err);
+        return err;
       });
   };
-
-  console.log("state:", values);
 
   const submitForm = (e) => {
     e.preventDefault();

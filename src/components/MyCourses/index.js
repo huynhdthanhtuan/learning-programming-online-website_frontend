@@ -1,47 +1,37 @@
-import React from "react";
-import { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Header } from "..";
+import { getUserHasCourses } from "./apiMyCourses";
+import { isAuthenticated } from "../Auth";
+import { toast } from "react-toastify";
 import Carted from "../Carted";
-import {getUserHasCourses} from './apiMyCourses'
-import {isAuthenticated} from '../Auth'
-import { ToastContainer, toast } from 'react-toastify';
 
 const MyCourses = ({}) => {
-    const {token, user } = isAuthenticated([])
+  const { token, user } = isAuthenticated([]);
+  const [userHasCourses, setUserHasCourses] = useState();
 
-    const [userHasCourses, setUserHasCourses] = useState()
-    
-    
-    useEffect(() => {
-        getUserHasCourses(user._id, token)
-            .then(user => {
-               if(user.error) {
-                   toast.error(user.error)
-               }else {
-                   setUserHasCourses(user)
-               }
-            })
-    },[])
+  useEffect(() => {
+    getUserHasCourses(user._id, token).then((user) => {
+      if (user.error) {
+        toast.error(user.error);
+      } else {
+        setUserHasCourses(user);
+      }
+      console.log(user);
+    });
+  }, []);
 
-    console.log(userHasCourses);
-    return (
-        <div>
-        <Header />
-        <div className="container-fluid">
+  return (
+    <div>
+      <Header role={0} />
+      <div className="container-fluid">
         {userHasCourses &&
-            userHasCourses.coursesId.map((course, i) => {
-                return(
-                    <Carted course={course} />
-                )
-            } ) 
-        }
-        </div>
-        
-        </div>
-       
-    )
+          userHasCourses.coursesId.map((course, i) => {
+            return <Carted course={course} />;
+          })}
+      </div>
+    </div>
+  );
 };
 
 export default MyCourses;
