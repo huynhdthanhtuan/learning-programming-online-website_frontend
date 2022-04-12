@@ -7,13 +7,18 @@ const SignUp = () => {
     name: "",
     email: "",
     password: "",
+    role: 0,
     error: "",
     success: false,
   });
-  const { name, email, password, error, success } = values;
+  const { name, email, password, role, error, success } = values;
 
   const handleChange = (name) => (event) => {
-    setValues({ ...values, [name]: event.target.value });
+    if (name == "role") {
+      setValues({ ...values, [name]: Number(event.target.value) });
+    } else {
+      setValues({ ...values, [name]: event.target.value });
+    }
   };
 
   const signUpApi = (user) => {
@@ -35,7 +40,7 @@ const SignUp = () => {
   const submitForm = (e) => {
     e.preventDefault();
 
-    signUpApi({ name, email, password }).then((data) => {
+    signUpApi({ name, email, password, role }).then((data) => {
       if (data.error || data.err) {
         setValues({ ...values, error: data.error || data.err, success: false });
       } else {
@@ -43,6 +48,7 @@ const SignUp = () => {
       }
     });
   };
+
   const errorShow = () => {
     return (
       <div
@@ -107,6 +113,24 @@ const SignUp = () => {
             type="password"
             onChange={handleChange("password")}
           />
+        </div>
+
+        <div className={styles.formGroup}>
+          <div className={styles.flex}>
+            <p className={styles.formLabel}>Role</p>
+            <p className={styles.formForce}>*</p>
+          </div>
+          <select
+            className={styles.formControl}
+            onChange={handleChange("role")}
+          >
+            <option key={0} value={0}>
+              Student
+            </option>
+            <option key={1} value={1}>
+              Teacher
+            </option>
+          </select>
         </div>
         <button
           type="button"
